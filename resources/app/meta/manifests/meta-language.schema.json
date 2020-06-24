@@ -10,7 +10,7 @@
       "$id": "#/properties/menu",
       "type": "object",
       "title": "The Menu Schema",
-      "required": ["file", "file.open", "file.save", "file.exit", "export", "export.inject", "export.inject-new", "export.inject-bulk", "export.frame-as-png", "export.animation-as-gif", "export.animation-as-hcollage", "export.animation-as-vcollage", "tools", "tools.palette-editor", "plugins", "plugins.game", "plugins.sprite", "help", "help.diagnostics", "help.about"],
+      "required": ["file", "file.open", "file.save", "file.exit", "export", "export.inject", "export.inject-new", "export.inject-bulk", "export.frame-as-png", "export.animation-as-gif", "export.animation-as-hcollage", "export.animation-as-vcollage", "export.animation-showcase-as-gif", "tools", "tools.palette-editor", "plugins", "plugins.game", "plugins.sprite", "help", "help.diagnostics", "help.about"],
       "items": {
         "$id": "#/properties/menu/items",
         "type": "string",

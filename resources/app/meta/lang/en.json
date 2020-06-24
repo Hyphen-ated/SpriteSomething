@@ -14,6 +14,7 @@
     "export.animation-as-gif": "Animation as GIF",
     "export.animation-as-hcollage": "Animation as Horizontal Collage",
     "export.animation-as-vcollage": "Animation as Vertical Collage",
+    "export.animation-showcase-as-gif": "Animation Showcase as GIF",
     "tools": "Tools",
     "tools.palette-editor": "Palette Editor",
     "tools.get-representative-image": "Get Representative Image",

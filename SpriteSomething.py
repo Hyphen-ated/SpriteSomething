@@ -51,8 +51,9 @@ def process_command_line_args():
     #    *-random:            Randomize sprite file injected into game files
     #    get-*-sprites:       Download sprites
     #    get-alttpr-sprites:  Download Official ALttPR Sprites
-    #   --export-filename:    During mode:export, provide filename to export to
-    #                         (PNG/ZSPR/RDC)
+    #    showcase:            Export a GIF showing off a variety of animations
+    #   --export-filename:    During mode:export or mode:showcase, provide
+    #                         filename to export to (PNG/ZSPR/RDC)
     #   --dest-filename:      During mode:inject, provide filename of game file
     #                         to inject into
     #   --src-filename:       During mode:inject, provide filename of game file
@@ -61,6 +62,8 @@ def process_command_line_args():
     #                         game files to inject into
     #   --spr-filepath:       During mode:inject*, provide directory of sprite
     #                         files to randomly select to inject
+    #   --showcase-script:    During mode:showcase, provide json script file
+    #                         describing what animations to show
     #   --sprite:             Sprite file to open on first load of the app
     parser = ArgumentParser()
     parser.add_argument("--cli",
@@ -83,6 +86,9 @@ def process_command_line_args():
         help="Filename to Export sprite to",
         metavar="<export_filename>",
         default=None)
+    parser.add_argument("--export-showcase-gif",
+        action="store_true",
+        help="Activate export showcase immediately on launch")
     parser.add_argument("--dest-filename",
         dest="dest-filename",
         help="Destination Filename for Single Game File",
@@ -102,7 +108,7 @@ def process_command_line_args():
         dest="spr-filepath",
         help="Source Filepath for directory of Sprite Files",
         metavar="<spr_filepath>",
-        default=None)
+        default=None)    
     parser.add_argument("--sprite",
         dest="sprite",
         help="A sprite file to load upon opening",

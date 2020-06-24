@@ -86,6 +86,20 @@ class CLIMainFrame():
 					# SpriteSomething.[py|exe] --cli=1 --mode=get-alttpr-sprites
           self.load_sprite(os.path.join("resources","app","snes","zelda3","link","sheets","link.zspr"))	#load Link
           self.sprite.get_alttpr_sprites()	#get ALttPR sprites; # FIXME: Do we want this in the sprite class or somewhere else?
+      elif mode == "showcase":
+        showcase_script_path = os.path.join("resources","user",self.game.console_name,self.game.internal_name,"showcase_script_default.json")	#default showcase script location | user_resources/snes/zelda3/
+        dest_default_path = os.path.join("resources","user",self.game.console_name,self.game.internal_name,"gamefiles","export")	#default export location | user_resources/snes/zelda3/gamefiles/export/*.*
+        export_filename = os.path.join(dest_default_path,"showcase_" + self.sprite.filename)
+
+        if "showcase-script" in command_line_args:
+            if not command_line_args["showcase-script"] is None:
+              showcase_script_path = command_line_args["script"]
+        if "export-filename" in command_line_args:	#if we've provide a destination, set it
+          if not command_line_args["export-filename"] is None:
+              export_filename = command_line_args["export-filename"]        
+                
+        self.export_showcase_gif(showcase_script_path=showcase_script_path, export_filename=export_filename)
+      
       else:
         print("No valid CLI Mode provided")
     else:
@@ -97,10 +111,11 @@ class CLIMainFrame():
     for filename in common.get_all_resources(["meta","manifests"],"app_names.json"):
       with open(filename) as name_file:
         for key,item in json.load(name_file).items():
-          if key in name_dict:
-            name_dict[key].extend(item)
-          else:
-            name_dict[key] = item
+          if not key == "$schema":
+            if key in name_dict:
+              name_dict[key].extend(item)
+            else:
+              name_dict[key] = item
     app_name = []
     if random.choice([True,False]):
       app_name.append(random.choice(name_dict["pre"]))
@@ -235,3 +250,11 @@ class CLIMainFrame():
       print("If you got here, it's busted.")
 #      self.load_sprite(sprite)
 #      self.copy_into_ROM(inject=True, dest_filename=source_filename,source_filename=source_filename)
+
+
+  def export_showcase_gif(self, showcase_script_path=None, export_filename=None):
+    with open(os.path.join(showcase_script_path)) as scriptFile:
+      script = json.load(scriptFile)
+      _, _, animation_engine = gamelib.autodetect(self.sprite.filename)
+      print("script: " + showcase_script_path + ", export: " + export_filename)
+      animation_engine.cli_export_animation_showcase_as_gif(script, export_filename)  

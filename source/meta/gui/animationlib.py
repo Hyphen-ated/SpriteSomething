@@ -5,6 +5,7 @@ import tkinter as tk
 import random
 import json
 import itertools
+import os
 from PIL import Image, ImageTk
 from source.meta.common import common
 from source.meta.gui import gui_common
@@ -456,3 +457,117 @@ class AnimationEngineParent():
 				return False
 		else:
 			return False
+
+
+	def gui_export_animation_showcase_as_gif(self):
+		showcase_script_path = os.path.join("resources","user",self.game.console_name,self.game.internal_name,"showcase_script_default.json")	#default showcase script location | user_resources/snes/zelda3/
+		sprite_name = self.sprite.metadata["sprite.name"]
+		export_filename = os.path.join("resources","user",self.game.console_name,self.game.internal_name,"showcase", sprite_name + ".gif")
+
+		with open(os.path.join(showcase_script_path)) as scriptFile:
+			script = json.load(scriptFile)
+			self.export_animation_showcase_as_gif(script, export_filename)
+
+
+	def cli_export_animation_showcase_as_gif(self, script_json, filename):
+		#this doesnt work
+		self.zoom_getter = lambda _: 1
+		self.frame_getter = lambda _: 0
+		self.coord_getter = lambda _: 0
+		self.export_animation_showcase_as_gif(script_json, filename)
+
+	def export_animation_showcase_as_gif(self, script_json, filename):
+		print("animation keys")
+		print(self.animations.keys())
+		print("spiffy")
+		print(self.spiffy_dict)
+		
+
+		GIF_MAX_FRAMERATE = 100.0  #GIF format in theory supports 100 FPS, but some programs display at 50 FPS
+		ACTUAL_FRAMERATE = 60.0
+		speed = 1
+		zoom = 4
+
+		frames = []
+		durations = []
+
+		animation_script = script_json["script"]
+		
+		gif_x_size = 48
+		gif_y_size = 48
+		
+		for item in animation_script:
+			animation_name = item["animation"]
+			direction = item["direction"]
+			item_frames = item["frames"]
+			animation = self.animations[animation_name]
+			self.set_animation(animation_name)
+			#todo validate here
+
+			image_list = []
+			palettes = ["green_mail", "fighter_sword"]
+			pose_list = self.sprite.get_pose_list(animation_name, direction)
+			animation_duration = sum([pose["frames"] for pose in pose_list])
+			
+			
+			
+			for pose_number in range(len(pose_list)):				
+				image_list.append(self.sprite.get_image(animation_name, direction, pose_number, palettes, 0))
+
+			for script_frame in range(item_frames):
+				frame_number = script_frame % animation_duration		
+				
+				pose_number = self.get_pose_number_from_frames(frame_number)
+				image, origin = self.sprite.get_image(animation_name, direction, pose_number, palettes, frame_number)
+
+				x_min = min([origin[0] for image,origin in image_list])
+				x_max = max([image.size[0]+origin[0] for image,origin in image_list])
+				y_min = min([origin[1] for image,origin in image_list])
+				y_max = max([image.size[1]+origin[1] for image,origin in image_list])
+			
+				this_frame = Image.new("RGBA", (gif_x_size,gif_y_size))
+				this_frame.paste(image, (origin[0]-x_min, origin[1]-y_min), image)
+#				this_frame.paste(image, (0, 0), image)
+
+				#PIL makes transparency so difficult...
+				alpha = this_frame.split()[3]
+				#reserve color number 255
+				this_frame = this_frame.convert('P', palette=Image.ADAPTIVE, colors=255)
+
+				mask = Image.eval(alpha, lambda a: 255 if a == 0 else 0)
+				#apply color number 255
+				this_frame.paste(255, mask)
+
+				new_size = tuple(int(dim*zoom) for dim in this_frame.size)
+				this_frame = this_frame.resize(new_size,resample=Image.NEAREST)
+
+				if frames and common.equal(this_frame, frames[-1]):
+					durations[-1] += 1
+				else:
+					frames.append(this_frame)
+					durations.append(1)
+			
+			
+			
+
+
+		gif_durations = [
+			1000.0 *   #millisecond conversion
+			max(
+				1.0/GIF_MAX_FRAMERATE,
+				round(duration/(speed*ACTUAL_FRAMERATE), 2)
+			)
+			for duration in durations
+		]
+		if len(frames) > 1:
+			frames[0].save(filename, format='GIF', append_images=frames[1:],
+						   save_all=True, transparency=255, disposal=2, duration=gif_durations, loop=0,
+						   optimize=False)
+			return True
+		elif len(frames) == 1:
+			frames[0].save(filename)
+		else:
+			return False
+		pass
+	def animation_to_frames(self):
+		pass

@@ -40,6 +40,11 @@ def make_GUI(command_line_args):
 	root.configure(bg='#f0f0f0')   #background color
 	main_frame = SpriteSomethingMainFrame(root, command_line_args)
 	root.protocol("WM_DELETE_WINDOW", main_frame.exit)           #intercept when the user clicks the X
+	
+	if "export_showcase_gif" in command_line_args and command_line_args["export_showcase_gif"]:
+		main_frame.export_animation_showcase_as_gif()
+		exit(0)
+		
 
   # generic error message
 	def show_error(self, exception, message, callstack):
@@ -73,7 +78,8 @@ class SpriteSomethingMainFrame(tk.Frame):
 			"export.frame-as-png": "./",
 			"export.animation-as-gif": "./",
 			"export.animation-as-hcollage": "./",
-			"export.animation-as-vcollage": "./"
+			"export.animation-as-vcollage": "./",
+			"export.animation-showcase-as-gif": "./",
 		}
 		#read saved working dirs file if it exists and set these
 		working_dir_path = os.path.join(".","resources","user","meta","manifests","working_dirs.json")
@@ -215,6 +221,8 @@ class SpriteSomethingMainFrame(tk.Frame):
 													(self.fish.translate("meta","menu","export.animation-as-gif"),"animation-as-gif",self.export_animation_as_gif),
 													(self.fish.translate("meta","menu","export.animation-as-hcollage"),"animation-as-hcollage",partial(self.export_animation_as_collage,"horizontal")),
 													#(self.fish.translate("meta","menu","export.animation-as-vcollage"),"animation-as-vcollage",None),#partial(self.export_animation_as_collage,"vertical")),
+											     	(self.fish.translate("meta","menu","export.animation-showcase-as-gif"),"animation-showcase-as-gif",self.export_animation_showcase_as_gif),
+
 											])
 		menu_options.append(export_menu)
 
@@ -1112,6 +1120,9 @@ class SpriteSomethingMainFrame(tk.Frame):
 
 		self.save_working_dirs()
 		sys.exit(0)
+
+	def export_animation_showcase_as_gif(self):
+		self.animation_engine.gui_export_animation_showcase_as_gif()
 
 	######################### HELPER FUNCTIONS ARE BELOW HERE ###############################
 
