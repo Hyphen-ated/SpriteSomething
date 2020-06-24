@@ -1,0 +1,99 @@
+{
+"script": [
+    {
+        "animation": "Stand",
+        "direction": "down",
+        "frames": 60
+    },
+    {
+        "animation": "Walk",
+        "direction": "down",
+        "frames": 60
+    },
+    {
+        "animation": "Grab",
+        "direction": "down",
+        "frames": 60
+    },
+    {
+        "animation": "Push",
+        "direction": "down",
+        "frames": 60
+    },   
+    {
+        "animation": "Attack",
+        "direction": "down",
+        "frames": 30
+    },
+    {
+        "animation": "Stand",
+        "direction": "right",
+        "frames": 60
+    },
+    {
+        "animation": "Walk",
+        "direction": "right",
+        "frames": 60
+    },
+    {
+        "animation": "Grab",
+        "direction": "right",
+        "frames": 60
+    },
+    {
+        "animation": "Push",
+        "direction": "right",
+        "frames": 60
+    },   
+    {
+        "animation": "Attack",
+        "direction": "right",
+        "frames": 30
+    },    
+    {
+        "animation": "Stand",
+        "direction": "up",
+        "frames": 60
+    },
+    {
+        "animation": "Walk",
+        "direction": "up",
+        "frames": 60
+    },
+    {
+        "animation": "Grab",
+        "direction": "up",
+        "frames": 60
+    },
+    {
+        "animation": "Push",
+        "direction": "up",
+        "frames": 60
+    },   
+    {
+        "animation": "Attack",
+        "direction": "up",
+        "frames": 30
+    },
+    {
+        "animation": "Item get",
+        "direction": "down",
+        "frames": 60
+    },
+    {
+        "animation": "Crystal get",
+        "direction": "down",
+        "frames": 60
+    },
+    {
+        "animation": "Death",
+        "direction": "down",
+        "frames": 60
+    },
+    {
+        "animation": "Fall",
+        "direction": "down",
+        "frames": 60
+    }
+]
+}
