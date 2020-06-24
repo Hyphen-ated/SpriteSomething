@@ -513,39 +513,39 @@ class AnimationEngineParent():
 			
 			for pose_number in range(len(pose_list)):				
 				image_list.append(self.sprite.get_image(animation_name, direction, pose_number, palettes, 0))
-
-			for script_frame in range(item_frames):
-				frame_number = script_frame % animation_duration		
+			if animation_duration > 0:
+				for script_frame in range(item_frames):
+					frame_number = script_frame % animation_duration		
+					
+					pose_number = self.get_pose_number_from_frames(frame_number)
+					image, origin = self.sprite.get_image(animation_name, direction, pose_number, palettes, frame_number)
+	
+					x_min = min([origin[0] for image,origin in image_list])
+					x_max = max([image.size[0]+origin[0] for image,origin in image_list])
+					y_min = min([origin[1] for image,origin in image_list])
+					y_max = max([image.size[1]+origin[1] for image,origin in image_list])
 				
-				pose_number = self.get_pose_number_from_frames(frame_number)
-				image, origin = self.sprite.get_image(animation_name, direction, pose_number, palettes, frame_number)
-
-				x_min = min([origin[0] for image,origin in image_list])
-				x_max = max([image.size[0]+origin[0] for image,origin in image_list])
-				y_min = min([origin[1] for image,origin in image_list])
-				y_max = max([image.size[1]+origin[1] for image,origin in image_list])
-			
-				this_frame = Image.new("RGBA", (gif_x_size,gif_y_size))
-				this_frame.paste(image, (origin[0]-x_min, origin[1]-y_min), image)
-#				this_frame.paste(image, (0, 0), image)
-
-				#PIL makes transparency so difficult...
-				alpha = this_frame.split()[3]
-				#reserve color number 255
-				this_frame = this_frame.convert('P', palette=Image.ADAPTIVE, colors=255)
-
-				mask = Image.eval(alpha, lambda a: 255 if a == 0 else 0)
-				#apply color number 255
-				this_frame.paste(255, mask)
-
-				new_size = tuple(int(dim*zoom) for dim in this_frame.size)
-				this_frame = this_frame.resize(new_size,resample=Image.NEAREST)
-
-				if frames and common.equal(this_frame, frames[-1]):
-					durations[-1] += 1
-				else:
-					frames.append(this_frame)
-					durations.append(1)
+					this_frame = Image.new("RGBA", (gif_x_size,gif_y_size))
+					this_frame.paste(image, (origin[0]-x_min, origin[1]-y_min), image)
+	#				this_frame.paste(image, (0, 0), image)
+	
+					#PIL makes transparency so difficult...
+					alpha = this_frame.split()[3]
+					#reserve color number 255
+					this_frame = this_frame.convert('P', palette=Image.ADAPTIVE, colors=255)
+	
+					mask = Image.eval(alpha, lambda a: 255 if a == 0 else 0)
+					#apply color number 255
+					this_frame.paste(255, mask)
+	
+					new_size = tuple(int(dim*zoom) for dim in this_frame.size)
+					this_frame = this_frame.resize(new_size,resample=Image.NEAREST)
+	
+					if frames and common.equal(this_frame, frames[-1]):
+						durations[-1] += 1
+					else:
+						frames.append(this_frame)
+						durations.append(1)
 			
 			
 			
